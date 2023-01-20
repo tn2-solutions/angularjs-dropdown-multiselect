@@ -72,6 +72,7 @@ export default function dropdownMultiselectController(
 		groupBy: undefined,
 		checkBoxes: false,
 		groupByTextProvider: null,
+		orderByProvider: null,
 		smartButtonMaxItems: 0,
 		smartButtonTextConverter: angular.noop,
 		styleActive: false,
@@ -309,6 +310,10 @@ export default function dropdownMultiselectController(
 		});
 		$scope.externalEvents.onSelectionChanged();
 		$scope.selectedGroup = null;
+
+		if ($scope.settings.closeOnSelect) {
+			$scope.close();
+		}
 	}
 
 	function deselectAll(dontSendEvent = false) {
@@ -321,6 +326,10 @@ export default function dropdownMultiselectController(
 			$scope.externalEvents.onSelectionChanged();
 		}
 		$scope.selectedGroup = null;
+
+		if ($scope.settings.closeOnDeselect) {
+			$scope.close();
+		}
 	}
 
 	function setSelectedItem(option, dontRemove = false, fireSelectionChange) {
@@ -507,6 +516,10 @@ export default function dropdownMultiselectController(
 	}
 
 	function orderFunction(object1, object2) {
+		if ($scope.settings.orderByProvider !== null) {
+			return $scope.settings.orderByProvider($scope.options, object1, object2)
+		}
+
 		if (angular.isUndefined(object2)) {
 			return -1;
 		}
